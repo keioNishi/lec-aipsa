@@ -7,6 +7,9 @@ TESTSRC     = test_$(TOP).v
 ALLSRCS     = $(SRCS)
 TESTSRCS    = $(TESTSRC) $(SRCS)
 VCDFILE     = $(TOP).vcd
+VCDFILE_TYP = $(basename $(VCDFILE))_typ.vcd
+VCDFILE_MIN = $(basename $(VCDFILE))_min.vcd
+VCDFILE_MAX = $(basename $(VCDFILE))_max.vcd
 YOSYSSCRIPT = $(TOP).ys
 OUTFILE     = a.out
 GATEFILE    = gate.v
@@ -15,7 +18,7 @@ DOTFILE     = show.dot
 CELLLIB     = ../osu018_stdcells.lib
 CELLFILE    = ../osu018_stdcells.v
 
-.PHONY: all sim view wave synth yosys show typsim minsim maxsim clean simple updown preset
+.PHONY: all sim view wave synth yosys show typsim minsim maxsim typwave minwave maxwave clean simple updown preset
 
 all: sim
 
@@ -38,17 +41,35 @@ $(GATEFILE): $(ALLSRCS) $(YOSYSSCRIPT)
 show: $(DOTFILE)
 	gvedit $(DOTFILE)
 
-typsim: $(GATEFILE)
+typsim: $(VCDFILE_TYP)
+
+$(VCDFILE_TYP): $(GATEFILE) $(TESTSRC) $(CELLFILE)
 	iverilog -gspecify -T typ -o gate_typ.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_typ.out
+	mv -f $(VCDFILE) $@
 
-minsim: $(GATEFILE)
+typwave: $(VCDFILE_TYP)
+	gtkwave -4 'fontname_signals Lucida Console 12' -4 'fontname_waves Lucida Console 12' $(VCDFILE_TYP)
+
+minsim: $(VCDFILE_MIN)
+
+$(VCDFILE_MIN): $(GATEFILE) $(TESTSRC) $(CELLFILE)
 	iverilog -gspecify -T min -o gate_min.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_min.out
+	mv -f $(VCDFILE) $@
 
-maxsim: $(GATEFILE)
+minwave: $(VCDFILE_MIN)
+	gtkwave -4 'fontname_signals Lucida Console 12' -4 'fontname_waves Lucida Console 12' $(VCDFILE_MIN)
+
+maxsim: $(VCDFILE_MAX)
+
+$(VCDFILE_MAX): $(GATEFILE) $(TESTSRC) $(CELLFILE)
 	iverilog -gspecify -T max -o gate_max.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_max.out
+	mv -f $(VCDFILE) $@
+
+maxwave: $(VCDFILE_MAX)
+	gtkwave -4 'fontname_signals Lucida Console 12' -4 'fontname_waves Lucida Console 12' $(VCDFILE_MAX)
 
 simple:
 	$(MAKE) TOP=simple_counter
