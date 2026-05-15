@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module test;
 	logic ia, ib, sel, out;
 	sel sel1(ia, ib, sel, out);

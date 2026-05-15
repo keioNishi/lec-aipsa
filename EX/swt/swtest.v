@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 `include "sw.vh"
 module swtest;
 	logic [`PKTW:0] i0, i1, i2, i3;

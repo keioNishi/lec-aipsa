@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module test;
 	logic [1:0] ra, wa;
 	logic [7:0] rd, wd;

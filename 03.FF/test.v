@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module test;
 	logic d, clk;
 	ff ff0(d, q, clk);

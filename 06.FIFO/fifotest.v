@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module fifotest;
 	logic [7:0] in, out;
 	logic we, re;

@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module test;
 	logic en, clk, rst;
 	logic [2:0] val;

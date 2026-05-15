@@ -36,15 +36,15 @@ show: $(DOTFILE)
 	gvedit $(DOTFILE)
 
 typsim: $(GATEFILE)
-	iverilog -gspecify -T typ -o gate_typ.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
+	iverilog -g2012 -gspecify -T typ -o gate_typ.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_typ.out
 
 minsim: $(GATEFILE)
-	iverilog -gspecify -T min -o gate_min.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
+	iverilog -g2012 -gspecify -T min -o gate_min.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_min.out
 
 maxsim: $(GATEFILE)
-	iverilog -gspecify -T max -o gate_max.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
+	iverilog -g2012 -gspecify -T max -o gate_max.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_max.out
 
 clean:

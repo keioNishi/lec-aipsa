@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module test;
 	logic [3:0] a, b, s;
 	raddr raddr(a, b, s, co);

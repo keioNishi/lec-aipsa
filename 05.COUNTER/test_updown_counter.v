@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module test;
 	logic ud, clk, rst;
 	wire [3:0] count;

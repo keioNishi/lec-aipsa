@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module test;
 	logic a, b;
 	logic [1:0] floor;
