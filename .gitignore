@@ -1,0 +1,23 @@
+# Icarus Verilog
+a.out
+*.vvp
+
+# Waveform
+*.vcd
+*.fst
+*.gtkw
+
+# yosys / abc
+abc.history
+show.dot
+synth.v
+*.blif
+*.json
+log
+
+# Editor / OS
+*~
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
