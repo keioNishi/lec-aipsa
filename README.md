@@ -4,7 +4,7 @@
 
 # Advanced Information Processing System Architecture (AIPSA) — Lecture Notes
 ## lec-aipsa
-- Location: Yagami 12-104, 14-B102
+- Location: Yagami 14-B102
 - Browsing and downloading the materials
   - Use this page, or `git clone` to download the entire repository.
 - Individual files can also be downloaded via the links below.
@@ -26,8 +26,9 @@
   - Install the binary that matches your PC.
   - Use the latest version.
   - Detailed installation instructions will be given in class.
-  - The tools are already installed on the PCs in the ITC labs.
+  - The tools are already installed on the PCs in the KIC labs.
   - Putting the tools on a USB stick is a convenient way to use the same setup at the university, at home, or anywhere.
+- Other free or commercial tools (e.g., Cadence, Synopsys, etc.) may also be used in this lecture and the exercises.
 
 ## Using your own environment
 - You are free to build and use your own environment.
