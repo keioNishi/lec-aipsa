@@ -1,0 +1,11 @@
+read_verilog -sv state-oh.v
+proc
+hierarchy -check -top state
+synth -auto-top
+write_verilog synth.v
+dfflibmap -liberty ../osu018_stdcells.lib
+abc -D 5000 -liberty ../osu018_stdcells.lib
+stat -liberty ../osu018_stdcells.lib
+write_verilog gate.v
+select state
+#show -viewer gvedit

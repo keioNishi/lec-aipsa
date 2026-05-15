@@ -1,19 +1,18 @@
-SRCS        = sw.v ib.v ibsm.v fifo.v mkreq.v mkwe.v arb.v cb.v cbsel.v ackor.v
-TESTSRC     = swtest.v
-ALLSRCS     = sw.vh $(SRCS)
+SRCS        = fifo.v
+TESTSRC     = fifotest.v
+ALLSRCS     = $(SRCS)
 TESTSRCS    = $(TESTSRC) $(SRCS)
-VCDFILE     = sw.vcd
-YOSYSSCRIPT = sw.ys
-TOP         = sw
+VCDFILE     = fifo.vcd
+YOSYSSCRIPT = fifo.ys
+TOP         = fifo
 OUTFILE     = a.out
 GATEFILE    = gate.v
 SYNTHFILE   = synth.v
 DOTFILE     = show.dot
-CELLLIB     = ../../osu018_stdcells.lib
-CELLFILE    = ../../osu018_stdcells.v
+CELLLIB     = ../osu018_stdcells.lib
+CELLFILE    = ../osu018_stdcells.v
 
-.PHONY: all sim view wave synth yosys show typsim minsim maxsim clean \
-        sw fifo ibsm mkreq mkwe ib arb cbsel cb ackor
+.PHONY: all sim view wave synth yosys show typsim minsim maxsim clean
 
 all: sim
 
@@ -47,27 +46,6 @@ minsim: $(GATEFILE)
 maxsim: $(GATEFILE)
 	iverilog -gspecify -T max -o gate_max.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_max.out
-
-sw:
-	iverilog -g2012 $(SRCS)
-fifo:
-	iverilog -g2012 fifo.v
-ibsm:
-	iverilog -g2012 ibsm.v
-mkreq:
-	iverilog -g2012 mkreq.v
-mkwe:
-	iverilog -g2012 mkwe.v
-ib:
-	iverilog -g2012 ib.v ibsm.v fifo.v mkreq.v mkwe.v
-arb:
-	iverilog -g2012 arb.v
-cbsel:
-	iverilog -g2012 cbsel.v
-cb:
-	iverilog -g2012 cb.v cbsel.v
-ackor:
-	iverilog -g2012 ackor.v
 
 clean:
 	-rm -f *.out *.vcd *.dot abc.history $(GATEFILE) $(SYNTHFILE)

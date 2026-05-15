@@ -1,16 +1,16 @@
 # Icarus Verilog
-a.out
+*.out
 *.vvp
 
 # Waveform
 *.vcd
 *.fst
-*.gtkw
 
 # yosys / abc
 abc.history
 show.dot
 synth.v
+gate.v
 *.blif
 *.json
 log

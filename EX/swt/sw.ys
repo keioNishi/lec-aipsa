@@ -1,0 +1,20 @@
+read_verilog -sv ibsm.v
+read_verilog -sv fifo.v
+read_verilog -sv mkreq.v
+read_verilog -sv mkwe.v
+read_verilog -sv ib.v
+read_verilog -sv arb.v
+read_verilog -sv cbsel.v
+read_verilog -sv ackor.v
+read_verilog -sv cb.v
+read_verilog -sv sw.v
+proc
+hierarchy -check -top sw
+synth -auto-top
+write_verilog synth.v
+dfflibmap -liberty ../../osu018_stdcells.lib
+abc -D 5000 -liberty ../../osu018_stdcells.lib
+stat -liberty ../../osu018_stdcells.lib
+write_verilog gate.v
+select sw
+#show -viewer gvedit

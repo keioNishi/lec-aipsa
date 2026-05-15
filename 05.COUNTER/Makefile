@@ -1,19 +1,21 @@
-SRCS        = sw.v ib.v ibsm.v fifo.v mkreq.v mkwe.v arb.v cb.v cbsel.v ackor.v
-TESTSRC     = swtest.v
-ALLSRCS     = sw.vh $(SRCS)
+# 05.COUNTER contains three independent designs.
+# Select one with `make TOP=<name>` (default: preset_counter)
+# Convenience targets: `make simple`, `make updown`, `make preset`
+TOP        ?= preset_counter
+SRCS        = $(TOP).v
+TESTSRC     = test_$(TOP).v
+ALLSRCS     = $(SRCS)
 TESTSRCS    = $(TESTSRC) $(SRCS)
-VCDFILE     = sw.vcd
-YOSYSSCRIPT = sw.ys
-TOP         = sw
+VCDFILE     = $(TOP).vcd
+YOSYSSCRIPT = $(TOP).ys
 OUTFILE     = a.out
 GATEFILE    = gate.v
 SYNTHFILE   = synth.v
 DOTFILE     = show.dot
-CELLLIB     = ../../osu018_stdcells.lib
-CELLFILE    = ../../osu018_stdcells.v
+CELLLIB     = ../osu018_stdcells.lib
+CELLFILE    = ../osu018_stdcells.v
 
-.PHONY: all sim view wave synth yosys show typsim minsim maxsim clean \
-        sw fifo ibsm mkreq mkwe ib arb cbsel cb ackor
+.PHONY: all sim view wave synth yosys show typsim minsim maxsim clean simple updown preset
 
 all: sim
 
@@ -48,26 +50,14 @@ maxsim: $(GATEFILE)
 	iverilog -gspecify -T max -o gate_max.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_max.out
 
-sw:
-	iverilog -g2012 $(SRCS)
-fifo:
-	iverilog -g2012 fifo.v
-ibsm:
-	iverilog -g2012 ibsm.v
-mkreq:
-	iverilog -g2012 mkreq.v
-mkwe:
-	iverilog -g2012 mkwe.v
-ib:
-	iverilog -g2012 ib.v ibsm.v fifo.v mkreq.v mkwe.v
-arb:
-	iverilog -g2012 arb.v
-cbsel:
-	iverilog -g2012 cbsel.v
-cb:
-	iverilog -g2012 cb.v cbsel.v
-ackor:
-	iverilog -g2012 ackor.v
+simple:
+	$(MAKE) TOP=simple_counter
+
+updown:
+	$(MAKE) TOP=updown_counter
+
+preset:
+	$(MAKE) TOP=preset_counter
 
 clean:
 	-rm -f *.out *.vcd *.dot abc.history $(GATEFILE) $(SYNTHFILE)
