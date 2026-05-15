@@ -1,37 +1,37 @@
-[![Icarus_Verilogバッジ](https://img.shields.io/badge/Icarus_Verilog->v11.0-fe0000.svg?style=flat)](http://iverilog.icarus.com/)
-[![GTKWaveバッジ](https://img.shields.io/badge/GTKWave->v3.3.1-3d4067.svg?style=flat)](http://gtkwave.sourceforge.net/)
-[![yosysバッジ](https://img.shields.io/badge/yosys->v0.12--1-84e7f7.svg?style=flat)](https://github.com/YosysHQ/yosys#readme)
+[![Icarus Verilog Badge](https://img.shields.io/badge/Icarus_Verilog->v11.0-fe0000.svg?style=flat)](http://iverilog.icarus.com/)
+[![GTKWave Badge](https://img.shields.io/badge/GTKWave->v3.3.1-3d4067.svg?style=flat)](http://gtkwave.sourceforge.net/)
+[![yosys Badge](https://img.shields.io/badge/yosys->v0.12--1-84e7f7.svg?style=flat)](https://github.com/YosysHQ/yosys#readme)
 
-# Advanced Information Processing System Architecture (AIPSA) レクチャーノート
-## lec-aipsa / Lecture Notes for "Advanced Information Processing System Architecture"
-- 開講場所: 矢上 12-104, 14-B102
-- 全体の閲覧とダウンロード
-  - こちらのページ、もしくはgit cloneによりダウンロードを行って利用してください
-- 個別ダウンロードは下記にリンクがあります
-  - 個別ダウンロードはご自身の環境への展開や移動が必要となる場合があります
-  - 講義を受ける際にはgit cloneが便利です
+# Advanced Information Processing System Architecture (AIPSA) — Lecture Notes
+## lec-aipsa
+- Location: Yagami 12-104, 14-B102
+- Browsing and downloading the materials
+  - Use this page, or `git clone` to download the entire repository.
+- Individual files can also be downloaded via the links below.
+  - When downloading individual files, you may need to place or move them to fit your environment.
+  - Using `git clone` is most convenient when attending lectures.
 
-### 授業はPCの利用が必須です
-- Windows / MacOS / /Linux が利用できる環境であれば問題ありません
+### A PC is required for this course
+- Windows / macOS / Linux environments are all supported.
 
-### 自分のパソコンを持参することを強くお勧めします
-- Icarus Verilog、GTkWave、yosysなどを利用します
-- 利用ハードウェア記述言語はVerilogになりますが、授業で学ぶためVerilogについて事前に学んでおく必要はありません
-  - 一般的な計算機言語の基本構造を知っていれば問題ありません
+### You are strongly encouraged to bring your own laptop
+- We use Icarus Verilog, GTKWave, yosys, and other tools.
+- The hardware description language used is Verilog. You do not need to study Verilog in advance — it will be taught in class.
+  - Familiarity with the basic structure of any common programming language is sufficient.
 
-### CAD環境環境の構築および利用について
-- この授業は、Verilog論理シミュレーション、仮負荷シミュレーションにIcrus Verilogを利用します
-- また、波形ビューアにGTkWaveを利用します
-- 回路合成にyosysを利用します
-  - ご自分のPCに合ったバイナリをインストールして利用してください
-  - 最新版を利用するようにしてください
-  - インストールに関する詳細は授業中にご案内します
-  - ITCのPCにはすでにインストールされています
-  - USBメモリなどを用いて大学・自宅でも、どこでも利用できるようにするとよいでしょう
+### Setting up and using the CAD environment
+- This course uses Icarus Verilog for Verilog logic simulation and post-synthesis simulation.
+- GTKWave is used as the waveform viewer.
+- yosys is used for logic synthesis.
+  - Install the binary that matches your PC.
+  - Use the latest version.
+  - Detailed installation instructions will be given in class.
+  - The tools are already installed on the PCs in the ITC labs.
+  - Putting the tools on a USB stick is a convenient way to use the same setup at the university, at home, or anywhere.
 
-## 個人環境の利用について
-- 個人で環境を構築して利用することができます
-  - 環境構築に関して質問があれば、可能な範囲で対応します
-- 互換性の問題による不具合・不利益は免責とします
-  - バージョンなどの差異にご注意ください
-  - 特にSystem Verilogのサポート状況などで互換性の問題が発生する可能性があります
+## Using your own environment
+- You are free to build and use your own environment.
+  - Questions about environment setup will be answered to the extent possible.
+- Issues or disadvantages caused by compatibility problems are not the responsibility of the course.
+  - Pay attention to differences between versions.
+  - In particular, compatibility issues may arise around SystemVerilog support.
