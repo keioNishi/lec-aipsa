@@ -25,7 +25,6 @@
 - yosys is used for logic synthesis.
   - Install the binary that matches your PC.
   - Use the latest version.
-  - Detailed installation instructions will be given in class.
   - The tools are already installed on the PCs in the KIC labs.
   - Putting the tools on a USB stick is a convenient way to use the same setup at the university, at home, or anywhere.
 - Other free or commercial tools (e.g., Cadence, Synopsys, etc.) may also be used in this lecture and the exercises.
