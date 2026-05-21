@@ -1,4 +1,4 @@
-# 07.STATE has two implementations of the same module name `state`:
+# 08.STATE has two implementations of the same module name `state`:
 #   state.v     - binary-encoded FSM
 #   state-oh.v  - one-hot-encoded FSM (default; matches the legacy syn.scr)
 # Switch with: make STATEFILE=state.v
