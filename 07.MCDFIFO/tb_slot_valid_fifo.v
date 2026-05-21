@@ -10,25 +10,22 @@
 //-----------------------------------------------------------------------------
 
 `timescale 1ns/1ps
+`include "mcdfifo.vh"
 
 module tb_slot_valid_fifo;
 
-    localparam DATA_WIDTH = 8;
-    localparam ADDR_WIDTH = 4;             // depth = 16
-    localparam DEPTH      = (1 << ADDR_WIDTH);
-
     // DUT I/O
-    reg                   wr_clk = 0;
-    reg                   wr_rst_n = 1;
-    reg                   wr_en;
-    reg  [DATA_WIDTH-1:0] wr_data;
-    wire                  wr_full;
+    reg                    wr_clk = 0;
+    reg                    wr_rst_n = 1;
+    reg                    wr_en;
+    reg  [`DATA_WIDTH-1:0] wr_data;
+    wire                   wr_full;
 
-    reg                   rd_clk = 0;
-    reg                   rd_rst_n = 1;
-    reg                   rd_en;
-    wire [DATA_WIDTH-1:0] rd_data;
-    wire                  rd_empty;
+    reg                    rd_clk = 0;
+    reg                    rd_rst_n = 1;
+    reg                    rd_en;
+    wire [`DATA_WIDTH-1:0] rd_data;
+    wire                   rd_empty;
 
     // Adjustable clock periods
     real WR_PERIOD = 7.0;
@@ -37,14 +34,7 @@ module tb_slot_valid_fifo;
     always #(WR_PERIOD/2.0) wr_clk = ~wr_clk;
     always #(RD_PERIOD/2.0) rd_clk = ~rd_clk;
 
-    slot_valid_fifo
-`ifndef GATE_SIM
-    #(
-        .DATA_WIDTH(DATA_WIDTH),
-        .ADDR_WIDTH(ADDR_WIDTH)
-    )
-`endif
-    dut (
+    slot_valid_fifo dut (
         .wr_clk(wr_clk),  .wr_rst_n(wr_rst_n),
         .wr_en(wr_en),    .wr_data(wr_data),  .wr_full(wr_full),
 
@@ -55,7 +45,7 @@ module tb_slot_valid_fifo;
     //--------------------------------------------------------------
     // Reference queue + checkers
     //--------------------------------------------------------------
-    reg [DATA_WIDTH-1:0] ref_q [0:4095];
+    reg [`DATA_WIDTH-1:0] ref_q [0:4095];
     integer ref_head, ref_tail;
     integer errors, pushed, popped;
     integer wr_cycles, rd_cycles;
@@ -103,7 +93,7 @@ module tb_slot_valid_fifo;
     // Drive on NEGEDGE with blocking assignments (see tb_async_fifo.v note).
     task producer_burst(input integer N, input integer MAXGAP);
         integer i, gap;
-        reg [DATA_WIDTH-1:0] v;
+        reg [`DATA_WIDTH-1:0] v;
         begin
             i = 0;  v = 8'hA0;
             while (i < N) begin
@@ -188,7 +178,7 @@ module tb_slot_valid_fifo;
 
         // Scenario 4: throughput check (depth=16 should sustain ~1 word/wr_clk)
         WR_PERIOD = 10.0;  RD_PERIOD = 10.0;
-        $display("\n=== Scenario 4: throughput check (DEPTH=%0d) ===", DEPTH);
+        $display("\n=== Scenario 4: throughput check (depth=%0d) ===", `DEPTH);
         do_reset;
         scenario_wr_cycle_start = wr_cycles;
         fork
@@ -197,7 +187,7 @@ module tb_slot_valid_fifo;
         join
         repeat (50) @(posedge rd_clk);
         $display("  pushed=%0d in %0d wr_clk cycles (target <= ~%0d)",
-                 pushed, wr_cycles - scenario_wr_cycle_start, 512 + 4*DEPTH);
+                 pushed, wr_cycles - scenario_wr_cycle_start, 512 + 4*`DEPTH);
         $display("  errors=%0d", errors);
 
         if (errors == 0)

@@ -15,27 +15,24 @@
 //-----------------------------------------------------------------------------
 
 `timescale 1ns/1ps
+`include "mcdfifo.vh"
 
 module tb_async_fifo;
 
-    localparam DATA_WIDTH = 8;
-    localparam ADDR_WIDTH = 4;             // depth = 16
-    localparam DEPTH      = (1 << ADDR_WIDTH);
-
     // DUT I/O
-    reg                  wr_clk = 0;
-    reg                  wr_rst_n;
-    reg                  wr_en;
-    reg  [DATA_WIDTH-1:0] wr_data;
-    wire                 wr_full;
-    wire                 wr_almost_full;
+    reg                   wr_clk = 0;
+    reg                   wr_rst_n;
+    reg                   wr_en;
+    reg  [`DATA_WIDTH-1:0] wr_data;
+    wire                  wr_full;
+    wire                  wr_almost_full;
 
-    reg                  rd_clk = 0;
-    reg                  rd_rst_n;
-    reg                  rd_en;
-    wire [DATA_WIDTH-1:0] rd_data;
-    wire                 rd_empty;
-    wire                 rd_almost_empty;
+    reg                   rd_clk = 0;
+    reg                   rd_rst_n;
+    reg                   rd_en;
+    wire [`DATA_WIDTH-1:0] rd_data;
+    wire                  rd_empty;
+    wire                  rd_almost_empty;
 
     // Clock periods (will be reassigned per scenario)
     real WR_PERIOD = 7.0;     // ~143 MHz
@@ -45,14 +42,7 @@ module tb_async_fifo;
     always #(RD_PERIOD/2.0) rd_clk = ~rd_clk;
 
     // DUT
-    async_fifo
-`ifndef GATE_SIM
-    #(
-        .DATA_WIDTH(DATA_WIDTH),
-        .ADDR_WIDTH(ADDR_WIDTH)
-    )
-`endif
-    dut (
+    async_fifo dut (
         .wr_clk(wr_clk),  .wr_rst_n(wr_rst_n),
         .wr_en(wr_en),    .wr_data(wr_data),
         .wr_full(wr_full), .wr_almost_full(wr_almost_full),
@@ -65,7 +55,7 @@ module tb_async_fifo;
     //--------------------------------------------------------------
     // Reference queue (large enough for the test).
     //--------------------------------------------------------------
-    reg [DATA_WIDTH-1:0] ref_q [0:4095];
+    reg [`DATA_WIDTH-1:0] ref_q [0:4095];
     integer ref_head;     // next slot the producer will write
     integer ref_tail;     // next slot the consumer expects
     integer errors;
@@ -121,7 +111,7 @@ module tb_async_fifo;
     // eliminates the 1-cycle prediction error that arose with NBA driving.
     task producer_burst(input integer N, input integer MAXGAP);
         integer i, gap;
-        reg [DATA_WIDTH-1:0] v;
+        reg [`DATA_WIDTH-1:0] v;
         begin
             i = 0;
             v = 8'hA0;

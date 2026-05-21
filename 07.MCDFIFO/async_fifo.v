@@ -10,34 +10,50 @@
 // - Pure Verilog-2001; no SystemVerilog constructs.
 // - Reset: active-low, asynchronous assert / synchronous deassert in each
 //   clock domain (handled by reset synchronizers below).
-// - Depth = 2**ADDR_WIDTH.  ADDR_WIDTH >= 2 required.
+// - Depth = 2**`ADDR_WIDTH.  `ADDR_WIDTH >= 2 required.
 //-----------------------------------------------------------------------------
 
 `timescale 1ns/1ps
 `default_nettype none
+`include "mcdfifo.vh"
 
 //=============================================================================
-// 2-flop synchronizer for a single bit OR a small vector (e.g. Gray pointer).
+// 2-flop synchronizer for the (`ADDR_WIDTH+1)-bit Gray pointer.
 //=============================================================================
-module sync_2ff #(
-    parameter WIDTH = 1
-)(
-    input  wire             clk,
-    input  wire             rst_n,
-    input  wire [WIDTH-1:0] d,
-    output reg  [WIDTH-1:0] q
+module sync_2ff (
+    input  wire                clk,
+    input  wire                rst_n,
+    input  wire [`ADDR_WIDTH:0] d,
+    output reg  [`ADDR_WIDTH:0] q
 );
-    reg [WIDTH-1:0] q1;
+    reg [`ADDR_WIDTH:0] q1;
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            q1 <= {WIDTH{1'b0}};
-            q  <= {WIDTH{1'b0}};
+            q1 <= {(`ADDR_WIDTH+1){1'b0}};
+            q  <= {(`ADDR_WIDTH+1){1'b0}};
         end else begin
             q1 <= d;
             q  <= q1;
         end
     end
+endmodule
+
+
+//=============================================================================
+// Gray-to-binary converter (combinational, `ADDR_WIDTH+1 bits).
+//   b[MSB]   = g[MSB]
+//   b[i]     = b[i+1] ^ g[i]
+//=============================================================================
+module gray2bin (
+    input  wire [`ADDR_WIDTH:0] g,
+    output wire [`ADDR_WIDTH:0] b
+);
+    assign b[4] = g[4];
+    assign b[3] = b[4] ^ g[3];
+    assign b[2] = b[3] ^ g[2];
+    assign b[1] = b[2] ^ g[1];
+    assign b[0] = b[1] ^ g[0];
 endmodule
 
 
@@ -65,28 +81,23 @@ endmodule
 //=============================================================================
 // Top-level asynchronous FIFO.
 //=============================================================================
-module async_fifo #(
-    parameter DATA_WIDTH = 8,
-    parameter ADDR_WIDTH = 4              // depth = 2**ADDR_WIDTH
-)(
+module async_fifo (
     // ---- write clock domain ----
-    input  wire                  wr_clk,
-    input  wire                  wr_rst_n,    // async, active-low
-    input  wire                  wr_en,
-    input  wire [DATA_WIDTH-1:0] wr_data,
-    output wire                  wr_full,
-    output wire                  wr_almost_full,   // optional
+    input  wire                   wr_clk,
+    input  wire                   wr_rst_n,    // async, active-low
+    input  wire                   wr_en,
+    input  wire [`DATA_WIDTH-1:0] wr_data,
+    output wire                   wr_full,
+    output wire                   wr_almost_full,   // optional
 
     // ---- read clock domain ----
-    input  wire                  rd_clk,
-    input  wire                  rd_rst_n,    // async, active-low
-    input  wire                  rd_en,
-    output wire [DATA_WIDTH-1:0] rd_data,
-    output wire                  rd_empty,
-    output wire                  rd_almost_empty   // optional
+    input  wire                   rd_clk,
+    input  wire                   rd_rst_n,    // async, active-low
+    input  wire                   rd_en,
+    output wire [`DATA_WIDTH-1:0] rd_data,
+    output wire                   rd_empty,
+    output wire                   rd_almost_empty   // optional
 );
-
-    localparam DEPTH = (1 << ADDR_WIDTH);
 
     //-----------------------------------------------------------------
     // Reset synchronizers (one per clock domain).
@@ -99,30 +110,30 @@ module async_fifo #(
 
     //-----------------------------------------------------------------
     // Dual-port memory.  Inferred as block-RAM by most synthesis tools
-    // when DEPTH is large enough.  Independent r/w clocks.
+    // when `DEPTH is large enough.  Independent r/w clocks.
     //-----------------------------------------------------------------
-    reg [DATA_WIDTH-1:0] mem [0:DEPTH-1];
+    reg [`DATA_WIDTH-1:0] mem [0:`DEPTH-1];
 
     //-----------------------------------------------------------------
-    // Write side pointers (binary + Gray, ADDR_WIDTH+1 bits wide).
+    // Write side pointers (binary + Gray, `ADDR_WIDTH+1 bits wide).
     //
     // The extra MSB lets us distinguish "empty" from "full" when the
-    // ADDR_WIDTH-bit address parts match.
+    // `ADDR_WIDTH-bit address parts match.
     //-----------------------------------------------------------------
-    reg  [ADDR_WIDTH:0] wr_bin;
-    reg  [ADDR_WIDTH:0] wr_gray;
-    wire [ADDR_WIDTH:0] wr_bin_next;
-    wire [ADDR_WIDTH:0] wr_gray_next;
-    wire                wr_inc;
+    reg  [`ADDR_WIDTH:0] wr_bin;
+    reg  [`ADDR_WIDTH:0] wr_gray;
+    wire [`ADDR_WIDTH:0] wr_bin_next;
+    wire [`ADDR_WIDTH:0] wr_gray_next;
+    wire                 wr_inc;
 
     assign wr_inc       = wr_en & ~wr_full;
-    assign wr_bin_next  = wr_bin + {{ADDR_WIDTH{1'b0}}, wr_inc};
+    assign wr_bin_next  = wr_bin + {{`ADDR_WIDTH{1'b0}}, wr_inc};
     assign wr_gray_next = (wr_bin_next >> 1) ^ wr_bin_next;
 
     always @(posedge wr_clk or negedge wr_rst_n_s) begin
         if (!wr_rst_n_s) begin
-            wr_bin  <= {(ADDR_WIDTH+1){1'b0}};
-            wr_gray <= {(ADDR_WIDTH+1){1'b0}};
+            wr_bin  <= {(`ADDR_WIDTH+1){1'b0}};
+            wr_gray <= {(`ADDR_WIDTH+1){1'b0}};
         end else begin
             wr_bin  <= wr_bin_next;
             wr_gray <= wr_gray_next;
@@ -132,26 +143,26 @@ module async_fifo #(
     // Memory write port.
     always @(posedge wr_clk) begin
         if (wr_inc)
-            mem[wr_bin[ADDR_WIDTH-1:0]] <= wr_data;
+            mem[wr_bin[`ADDR_WIDTH-1:0]] <= wr_data;
     end
 
     //-----------------------------------------------------------------
     // Read side pointers (binary + Gray).
     //-----------------------------------------------------------------
-    reg  [ADDR_WIDTH:0] rd_bin;
-    reg  [ADDR_WIDTH:0] rd_gray;
-    wire [ADDR_WIDTH:0] rd_bin_next;
-    wire [ADDR_WIDTH:0] rd_gray_next;
-    wire                rd_inc;
+    reg  [`ADDR_WIDTH:0] rd_bin;
+    reg  [`ADDR_WIDTH:0] rd_gray;
+    wire [`ADDR_WIDTH:0] rd_bin_next;
+    wire [`ADDR_WIDTH:0] rd_gray_next;
+    wire                 rd_inc;
 
     assign rd_inc       = rd_en & ~rd_empty;
-    assign rd_bin_next  = rd_bin + {{ADDR_WIDTH{1'b0}}, rd_inc};
+    assign rd_bin_next  = rd_bin + {{`ADDR_WIDTH{1'b0}}, rd_inc};
     assign rd_gray_next = (rd_bin_next >> 1) ^ rd_bin_next;
 
     always @(posedge rd_clk or negedge rd_rst_n_s) begin
         if (!rd_rst_n_s) begin
-            rd_bin  <= {(ADDR_WIDTH+1){1'b0}};
-            rd_gray <= {(ADDR_WIDTH+1){1'b0}};
+            rd_bin  <= {(`ADDR_WIDTH+1){1'b0}};
+            rd_gray <= {(`ADDR_WIDTH+1){1'b0}};
         end else begin
             rd_bin  <= rd_bin_next;
             rd_gray <= rd_gray_next;
@@ -160,22 +171,22 @@ module async_fifo #(
 
     // Combinational read (latency = 0).  For BRAM use, change to a
     // registered output if the synthesis tool requires it.
-    assign rd_data = mem[rd_bin[ADDR_WIDTH-1:0]];
+    assign rd_data = mem[rd_bin[`ADDR_WIDTH-1:0]];
 
     //-----------------------------------------------------------------
     // Cross-domain pointer synchronizers.
     //   - rd_gray -> wr_clk domain (for full detection)
     //   - wr_gray -> rd_clk domain (for empty detection)
     //-----------------------------------------------------------------
-    wire [ADDR_WIDTH:0] rd_gray_at_wr;
-    wire [ADDR_WIDTH:0] wr_gray_at_rd;
+    wire [`ADDR_WIDTH:0] rd_gray_at_wr;
+    wire [`ADDR_WIDTH:0] wr_gray_at_rd;
 
-    sync_2ff #(.WIDTH(ADDR_WIDTH+1)) u_sync_rd2wr (
+    sync_2ff u_sync_rd2wr (
         .clk(wr_clk), .rst_n(wr_rst_n_s),
         .d(rd_gray),  .q(rd_gray_at_wr)
     );
 
-    sync_2ff #(.WIDTH(ADDR_WIDTH+1)) u_sync_wr2rd (
+    sync_2ff u_sync_wr2rd (
         .clk(rd_clk), .rst_n(rd_rst_n_s),
         .d(wr_gray),  .q(wr_gray_at_rd)
     );
@@ -195,8 +206,8 @@ module async_fifo #(
     //-----------------------------------------------------------------
     wire rd_empty_val = (rd_gray_next == wr_gray_at_rd);
     wire wr_full_val  = (wr_gray_next ==
-                         { ~rd_gray_at_wr[ADDR_WIDTH:ADDR_WIDTH-1],
-                            rd_gray_at_wr[ADDR_WIDTH-2:0] });
+                         { ~rd_gray_at_wr[`ADDR_WIDTH:`ADDR_WIDTH-1],
+                            rd_gray_at_wr[`ADDR_WIDTH-2:0] });
 
     reg rd_empty_r;
     reg wr_full_r;
@@ -219,23 +230,15 @@ module async_fifo #(
     // because they use the synchronized opposite-domain pointer.
     //-----------------------------------------------------------------
     // Convert synchronized Gray pointers back to binary in each domain.
-    function [ADDR_WIDTH:0] gray2bin;
-        input [ADDR_WIDTH:0] g;
-        integer i;
-        begin
-            gray2bin[ADDR_WIDTH] = g[ADDR_WIDTH];
-            for (i = ADDR_WIDTH-1; i >= 0; i = i - 1)
-                gray2bin[i] = gray2bin[i+1] ^ g[i];
-        end
-    endfunction
+    wire [`ADDR_WIDTH:0] rd_bin_at_wr;
+    wire [`ADDR_WIDTH:0] wr_bin_at_rd;
+    gray2bin u_g2b_rd (.g(rd_gray_at_wr), .b(rd_bin_at_wr));
+    gray2bin u_g2b_wr (.g(wr_gray_at_rd), .b(wr_bin_at_rd));
 
-    wire [ADDR_WIDTH:0] rd_bin_at_wr = gray2bin(rd_gray_at_wr);
-    wire [ADDR_WIDTH:0] wr_bin_at_rd = gray2bin(wr_gray_at_rd);
+    wire [`ADDR_WIDTH:0] wr_used = wr_bin     - rd_bin_at_wr;
+    wire [`ADDR_WIDTH:0] rd_used = wr_bin_at_rd - rd_bin;
 
-    wire [ADDR_WIDTH:0] wr_used = wr_bin     - rd_bin_at_wr;
-    wire [ADDR_WIDTH:0] rd_used = wr_bin_at_rd - rd_bin;
-
-    assign wr_almost_full  = (wr_used >= (DEPTH - 1));
+    assign wr_almost_full  = (wr_used >= (`DEPTH - 1));
     assign rd_almost_empty = (rd_used <= 1);
 
 endmodule
