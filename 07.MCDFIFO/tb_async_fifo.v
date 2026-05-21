@@ -45,10 +45,14 @@ module tb_async_fifo;
     always #(RD_PERIOD/2.0) rd_clk = ~rd_clk;
 
     // DUT
-    async_fifo #(
+    async_fifo
+`ifndef GATE_SIM
+    #(
         .DATA_WIDTH(DATA_WIDTH),
         .ADDR_WIDTH(ADDR_WIDTH)
-    ) dut (
+    )
+`endif
+    dut (
         .wr_clk(wr_clk),  .wr_rst_n(wr_rst_n),
         .wr_en(wr_en),    .wr_data(wr_data),
         .wr_full(wr_full), .wr_almost_full(wr_almost_full),

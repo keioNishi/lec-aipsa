@@ -37,10 +37,14 @@ module tb_slot_valid_fifo;
     always #(WR_PERIOD/2.0) wr_clk = ~wr_clk;
     always #(RD_PERIOD/2.0) rd_clk = ~rd_clk;
 
-    slot_valid_fifo #(
+    slot_valid_fifo
+`ifndef GATE_SIM
+    #(
         .DATA_WIDTH(DATA_WIDTH),
         .ADDR_WIDTH(ADDR_WIDTH)
-    ) dut (
+    )
+`endif
+    dut (
         .wr_clk(wr_clk),  .wr_rst_n(wr_rst_n),
         .wr_en(wr_en),    .wr_data(wr_data),  .wr_full(wr_full),
 
