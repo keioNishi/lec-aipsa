@@ -40,7 +40,7 @@ show: $(DOTFILE)
 	cmd //c start "" "$(basename $(DOTFILE)).svg"
 
 $(DOTFILE): $(ALLSRCS) $(YOSYSSCRIPT)
-	yosys -p "script $(YOSYSSCRIPT); show -notitle -format dot -prefix $(basename $(DOTFILE))"
+	yosys -p "script $(YOSYSSCRIPT); read_liberty -lib $(CELLLIB); show -notitle -format dot -prefix $(basename $(DOTFILE)) $(TOP)"
 
 # --- gate-level simulation (always re-runs) ---
 typsim: $(GATEFILE)
