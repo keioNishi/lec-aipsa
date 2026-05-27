@@ -19,54 +19,53 @@ CELLFILE    = ../osu018_stdcells.v
 
 all: sim
 
-sim: $(VCDFILE)
-
+# --- behavioral simulation (always re-runs) ---
 $(OUTFILE): $(TESTSRCS)
 	iverilog -g2012 -o $(OUTFILE) $(TESTSRCS)
 
-$(VCDFILE): $(OUTFILE)
+sim: $(OUTFILE)
 	vvp $(OUTFILE)
 
-view wave: $(VCDFILE)
+view wave: sim
 	gtkwave -4 'fontname_signals Lucida Console 12' -4 'fontname_waves Lucida Console 12' $(VCDFILE)
 
+# --- synthesis (rebuilds only when sources change) ---
 synth yosys: $(GATEFILE)
 
 $(GATEFILE): $(ALLSRCS) $(YOSYSSCRIPT)
 	yosys $(YOSYSSCRIPT)
 
 show: $(DOTFILE)
-	gvedit $(DOTFILE)
+	dot -Tsvg $(DOTFILE) -o $(basename $(DOTFILE)).svg
+	cmd //c start "" "$(basename $(DOTFILE)).svg"
 
-typsim: $(VCDFILE_TYP)
+$(DOTFILE): $(ALLSRCS) $(YOSYSSCRIPT)
+	yosys -p "script $(YOSYSSCRIPT); show -notitle -format dot -prefix $(basename $(DOTFILE))"
 
-$(VCDFILE_TYP): $(GATEFILE) $(TESTSRC) $(CELLFILE)
+# --- gate-level simulation (always re-runs) ---
+typsim: $(GATEFILE)
 	iverilog -g2012 -gspecify -T typ -o gate_typ.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_typ.out
-	mv -f $(VCDFILE) $@
+	mv -f $(VCDFILE) $(VCDFILE_TYP)
 
-typwave: $(VCDFILE_TYP)
+typwave: typsim
 	gtkwave -4 'fontname_signals Lucida Console 12' -4 'fontname_waves Lucida Console 12' $(VCDFILE_TYP)
 
-minsim: $(VCDFILE_MIN)
-
-$(VCDFILE_MIN): $(GATEFILE) $(TESTSRC) $(CELLFILE)
+minsim: $(GATEFILE)
 	iverilog -g2012 -gspecify -T min -o gate_min.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_min.out
-	mv -f $(VCDFILE) $@
+	mv -f $(VCDFILE) $(VCDFILE_MIN)
 
-minwave: $(VCDFILE_MIN)
+minwave: minsim
 	gtkwave -4 'fontname_signals Lucida Console 12' -4 'fontname_waves Lucida Console 12' $(VCDFILE_MIN)
 
-maxsim: $(VCDFILE_MAX)
-
-$(VCDFILE_MAX): $(GATEFILE) $(TESTSRC) $(CELLFILE)
+maxsim: $(GATEFILE)
 	iverilog -g2012 -gspecify -T max -o gate_max.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_max.out
-	mv -f $(VCDFILE) $@
+	mv -f $(VCDFILE) $(VCDFILE_MAX)
 
-maxwave: $(VCDFILE_MAX)
+maxwave: maxsim
 	gtkwave -4 'fontname_signals Lucida Console 12' -4 'fontname_waves Lucida Console 12' $(VCDFILE_MAX)
 
 clean:
-	-rm -f *.out *.vcd *.dot abc.history $(GATEFILE) $(SYNTHFILE)
+	-rm -f *.out *.vcd *.dot *.svg abc.history $(GATEFILE) $(SYNTHFILE)
