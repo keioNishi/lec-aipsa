@@ -1,5 +1,5 @@
 plugin -i slang
-read_slang mem.sv
+read_slang --best-effort-hierarchy mem.sv
 # Without the yosys-slang plugin, replace the two lines above with:
 # read_verilog -sv mem.sv
 proc

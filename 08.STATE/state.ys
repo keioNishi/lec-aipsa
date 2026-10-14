@@ -1,5 +1,5 @@
 plugin -i slang
-read_slang state-oh.sv
+read_slang --best-effort-hierarchy state-oh.sv
 # Without the yosys-slang plugin, replace the two lines above with:
 # read_verilog -sv state-oh.sv
 proc

@@ -1,5 +1,5 @@
 plugin -i slang
-read_slang ibsm.sv fifo.sv mkreq.sv mkwe.sv ib.sv arb.sv cbsel.sv ackor.sv cb.sv sw.sv
+read_slang --best-effort-hierarchy ibsm.sv fifo.sv mkreq.sv mkwe.sv ib.sv arb.sv cbsel.sv ackor.sv cb.sv sw.sv
 # Without the yosys-slang plugin, replace the two lines above with:
 # read_verilog -sv ibsm.sv fifo.sv mkreq.sv mkwe.sv ib.sv arb.sv cbsel.sv ackor.sv cb.sv sw.sv
 proc

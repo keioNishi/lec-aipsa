@@ -1,5 +1,5 @@
 plugin -i slang
-read_slang faddr.sv raddr.sv
+read_slang --best-effort-hierarchy faddr.sv raddr.sv
 # Without the yosys-slang plugin, replace the two lines above with:
 # read_verilog -sv faddr.sv raddr.sv
 proc

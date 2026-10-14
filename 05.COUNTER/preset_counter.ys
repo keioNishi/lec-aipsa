@@ -1,5 +1,5 @@
 plugin -i slang
-read_slang preset_counter.sv
+read_slang --best-effort-hierarchy preset_counter.sv
 # Without the yosys-slang plugin, replace the two lines above with:
 # read_verilog -sv preset_counter.sv
 proc

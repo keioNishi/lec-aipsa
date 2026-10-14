@@ -1,5 +1,5 @@
 plugin -i slang
-read_slang updown_counter.sv
+read_slang --best-effort-hierarchy updown_counter.sv
 # Without the yosys-slang plugin, replace the two lines above with:
 # read_verilog -sv updown_counter.sv
 proc

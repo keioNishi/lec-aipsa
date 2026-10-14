@@ -1,5 +1,5 @@
 plugin -i slang
-read_slang fifo.sv
+read_slang --best-effort-hierarchy fifo.sv
 # Without the yosys-slang plugin, replace the two lines above with:
 # read_verilog -sv fifo.sv
 proc
