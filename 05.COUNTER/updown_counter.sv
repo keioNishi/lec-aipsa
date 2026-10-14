@@ -1,0 +1,15 @@
+module updown_counter(
+	input  logic       ud,
+	output logic [3:0] count,
+	input  logic       clk,
+	input  logic       rst
+);
+	always_ff @(posedge clk) begin
+		if(rst) count <= 0;
+		else
+			if(ud) begin
+				if(count != 7) count <= count + 1;
+			end else
+				if(count != 0) count <= count - 1;
+	end
+endmodule

@@ -1,0 +1,16 @@
+module preset_counter(
+	input  logic       en,
+	input  logic [2:0] val,
+	output logic [3:0] count,
+	input  logic       clk,
+	input  logic       rst
+);
+	always_ff @(posedge clk) begin
+		if(rst) count <= 0;
+		else
+			if(en) begin
+				if(count != 0) count <= count - 1;
+			end else
+				count <= val;
+	end
+endmodule

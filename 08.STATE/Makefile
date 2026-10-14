@@ -1,10 +1,10 @@
 # 08.STATE has two implementations of the same module name `state`:
-#   state.v     - binary-encoded FSM
-#   state-oh.v  - one-hot-encoded FSM (default; matches the legacy syn.scr)
-# Switch with: make STATEFILE=state.v
-STATEFILE  ?= state-oh.v
+#   state.sv     - binary-encoded FSM
+#   state-oh.sv  - one-hot-encoded FSM (default; matches the legacy syn.scr)
+# Switch with: make STATEFILE=state.sv
+STATEFILE  ?= state-oh.sv
 SRCS        = $(STATEFILE)
-TESTSRC     = test.v
+TESTSRC     = test.sv
 ALLSRCS     = $(SRCS)
 TESTSRCS    = $(TESTSRC) $(SRCS)
 VCDFILE     = state.vcd
@@ -46,7 +46,7 @@ show: $(DOTFILE)
 typsim: $(VCDFILE_TYP)
 
 $(VCDFILE_TYP): $(GATEFILE) $(TESTSRC) $(CELLFILE)
-	iverilog -gspecify -T typ -o gate_typ.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
+	iverilog -g2012 -gspecify -T typ -o gate_typ.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_typ.out
 	mv -f $(VCDFILE) $@
 
@@ -56,7 +56,7 @@ typwave: $(VCDFILE_TYP)
 minsim: $(VCDFILE_MIN)
 
 $(VCDFILE_MIN): $(GATEFILE) $(TESTSRC) $(CELLFILE)
-	iverilog -gspecify -T min -o gate_min.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
+	iverilog -g2012 -gspecify -T min -o gate_min.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_min.out
 	mv -f $(VCDFILE) $@
 
@@ -66,7 +66,7 @@ minwave: $(VCDFILE_MIN)
 maxsim: $(VCDFILE_MAX)
 
 $(VCDFILE_MAX): $(GATEFILE) $(TESTSRC) $(CELLFILE)
-	iverilog -gspecify -T max -o gate_max.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
+	iverilog -g2012 -gspecify -T max -o gate_max.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_max.out
 	mv -f $(VCDFILE) $@
 

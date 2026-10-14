@@ -1,6 +1,6 @@
 SRCS        = sw.sv ib.sv ibsm.sv fifo.sv mkreq.sv mkwe.sv arb.sv cb.sv cbsel.sv ackor.sv
 TESTSRC     = test.sv
-ALLSRCS     = sw.vh $(SRCS)
+ALLSRCS     = sw.svh $(SRCS)
 TESTSRCS    = $(TESTSRC) $(SRCS)
 VCDFILE     = sw.vcd
 VCDFILE_TYP = $(basename $(VCDFILE))_typ.vcd
@@ -42,7 +42,7 @@ show: $(DOTFILE)
 typsim: $(VCDFILE_TYP)
 
 $(VCDFILE_TYP): $(GATEFILE) $(TESTSRC) $(CELLFILE)
-	iverilog -gspecify -T typ -o gate_typ.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
+	iverilog -g2012 -gspecify -T typ -o gate_typ.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_typ.out
 	mv -f $(VCDFILE) $@
 
@@ -52,7 +52,7 @@ typwave: $(VCDFILE_TYP)
 minsim: $(VCDFILE_MIN)
 
 $(VCDFILE_MIN): $(GATEFILE) $(TESTSRC) $(CELLFILE)
-	iverilog -gspecify -T min -o gate_min.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
+	iverilog -g2012 -gspecify -T min -o gate_min.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_min.out
 	mv -f $(VCDFILE) $@
 
@@ -62,7 +62,7 @@ minwave: $(VCDFILE_MIN)
 maxsim: $(VCDFILE_MAX)
 
 $(VCDFILE_MAX): $(GATEFILE) $(TESTSRC) $(CELLFILE)
-	iverilog -gspecify -T max -o gate_max.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
+	iverilog -g2012 -gspecify -T max -o gate_max.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_max.out
 	mv -f $(VCDFILE) $@
 

@@ -1,6 +1,6 @@
-SRCS        = sw.v ib.v ibsm.v fifo.v mkreq.v mkwe.v arb.v cb.v cbsel.v ackor.v
-TESTSRC     = swtest.v
-ALLSRCS     = sw.vh $(SRCS)
+SRCS        = sw.sv ib.sv ibsm.sv fifo.sv mkreq.sv mkwe.sv arb.sv cb.sv cbsel.sv ackor.sv
+TESTSRC     = swtest.sv
+ALLSRCS     = sw.svh $(SRCS)
 TESTSRCS    = $(TESTSRC) $(SRCS)
 VCDFILE     = sw.vcd
 VCDFILE_TYP = $(basename $(VCDFILE))_typ.vcd
@@ -42,7 +42,7 @@ show: $(DOTFILE)
 typsim: $(VCDFILE_TYP)
 
 $(VCDFILE_TYP): $(GATEFILE) $(TESTSRC) $(CELLFILE)
-	iverilog -gspecify -T typ -o gate_typ.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
+	iverilog -g2012 -gspecify -T typ -o gate_typ.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_typ.out
 	mv -f $(VCDFILE) $@
 
@@ -52,7 +52,7 @@ typwave: $(VCDFILE_TYP)
 minsim: $(VCDFILE_MIN)
 
 $(VCDFILE_MIN): $(GATEFILE) $(TESTSRC) $(CELLFILE)
-	iverilog -gspecify -T min -o gate_min.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
+	iverilog -g2012 -gspecify -T min -o gate_min.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_min.out
 	mv -f $(VCDFILE) $@
 
@@ -62,7 +62,7 @@ minwave: $(VCDFILE_MIN)
 maxsim: $(VCDFILE_MAX)
 
 $(VCDFILE_MAX): $(GATEFILE) $(TESTSRC) $(CELLFILE)
-	iverilog -gspecify -T max -o gate_max.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
+	iverilog -g2012 -gspecify -T max -o gate_max.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_max.out
 	mv -f $(VCDFILE) $@
 
@@ -72,23 +72,23 @@ maxwave: $(VCDFILE_MAX)
 sw:
 	iverilog -g2012 $(SRCS)
 fifo:
-	iverilog -g2012 fifo.v
+	iverilog -g2012 fifo.sv
 ibsm:
-	iverilog -g2012 ibsm.v
+	iverilog -g2012 ibsm.sv
 mkreq:
-	iverilog -g2012 mkreq.v
+	iverilog -g2012 mkreq.sv
 mkwe:
-	iverilog -g2012 mkwe.v
+	iverilog -g2012 mkwe.sv
 ib:
-	iverilog -g2012 ib.v ibsm.v fifo.v mkreq.v mkwe.v
+	iverilog -g2012 ib.sv ibsm.sv fifo.sv mkreq.sv mkwe.sv
 arb:
-	iverilog -g2012 arb.v
+	iverilog -g2012 arb.sv
 cbsel:
-	iverilog -g2012 cbsel.v
+	iverilog -g2012 cbsel.sv
 cb:
-	iverilog -g2012 cb.v cbsel.v
+	iverilog -g2012 cb.sv cbsel.sv
 ackor:
-	iverilog -g2012 ackor.v
+	iverilog -g2012 ackor.sv
 
 clean:
 	-rm -f *.out *.vcd *.dot abc.history $(GATEFILE) $(SYNTHFILE)

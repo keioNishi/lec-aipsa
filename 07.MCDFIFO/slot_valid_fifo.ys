@@ -1,4 +1,7 @@
-read_verilog -sv slot_valid_fifo.v
+plugin -i slang
+read_slang slot_valid_fifo.sv
+# Without the yosys-slang plugin, replace the two lines above with:
+# read_verilog -sv slot_valid_fifo.sv
 proc
 hierarchy -check -top slot_valid_fifo
 synth -auto-top

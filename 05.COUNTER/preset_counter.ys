@@ -1,4 +1,7 @@
-read_verilog -sv preset_counter.v
+plugin -i slang
+read_slang preset_counter.sv
+# Without the yosys-slang plugin, replace the two lines above with:
+# read_verilog -sv preset_counter.sv
 proc
 hierarchy -check -top preset_counter
 synth -auto-top

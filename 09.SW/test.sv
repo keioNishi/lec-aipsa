@@ -1,10 +1,10 @@
 `timescale 1ns/10ps
-`include "sw.vh"
+`include "sw.svh"
 module swtest;
 	logic [`PKTW:0] i0, i1, i2, i3;
 	logic [`PKTW:0] o0, o1, o2, o3;
 	logic clk, rst;
-	sw sw(i0, i1, i2, i3, o0, o1, o2, o3, clk, rst);
+	sw sw(.i0(i0), .i1(i1), .i2(i2), .i3(i3), .o0(o0), .o1(o1), .o2(o2), .o3(o3), .clk(clk), .rst(rst));
 	always #5 clk = ~clk;
 initial begin
 $dumpfile("sw.vcd");

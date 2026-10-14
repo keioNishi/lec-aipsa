@@ -1,5 +1,5 @@
-SRCS        = sel.v
-TESTSRC     = seltest.v
+SRCS        = sel.sv
+TESTSRC     = seltest.sv
 ALLSRCS     = $(SRCS)
 TESTSRCS    = $(TESTSRC) $(SRCS)
 VCDFILE     = sel.vcd

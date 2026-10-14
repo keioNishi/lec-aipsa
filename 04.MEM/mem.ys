@@ -1,4 +1,7 @@
-read_verilog -sv mem.v
+plugin -i slang
+read_slang mem.sv
+# Without the yosys-slang plugin, replace the two lines above with:
+# read_verilog -sv mem.sv
 proc
 hierarchy -check -top mem
 synth -auto-top

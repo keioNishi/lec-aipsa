@@ -1,24 +1,24 @@
 # 07.MCDFIFO has two multi-clock-domain FIFO implementations:
-#   async_fifo.v      - Gray-code pointer FIFO (Cummings, SNUG 2002)
-#   slot_valid_fifo.v - per-slot toggle/phase-flag FIFO
+#   async_fifo.sv      - Gray-code pointer FIFO (Cummings, SNUG 2002)
+#   slot_valid_fifo.sv - per-slot toggle/phase-flag FIFO
 # Switch with: make DESIGN=slot   (default: async)
 DESIGN     ?= async
 
 ifeq ($(DESIGN),slot)
-SRCS        = slot_valid_fifo.v
-TESTSRC     = tb_slot_valid_fifo.v
+SRCS        = slot_valid_fifo.sv
+TESTSRC     = tb_slot_valid_fifo.sv
 VCDFILE     = slot_valid_fifo.vcd
 YOSYSSCRIPT = slot_valid_fifo.ys
 TOP         = slot_valid_fifo
 else
-SRCS        = async_fifo.v
-TESTSRC     = tb_async_fifo.v
+SRCS        = async_fifo.sv
+TESTSRC     = tb_async_fifo.sv
 VCDFILE     = async_fifo.vcd
 YOSYSSCRIPT = async_fifo.ys
 TOP         = async_fifo
 endif
 
-ALLSRCS     = mcdfifo.vh $(SRCS)
+ALLSRCS     = mcdfifo.svh $(SRCS)
 TESTSRCS    = $(TESTSRC) $(SRCS)
 VCDFILE_TYP = $(basename $(VCDFILE))_typ.vcd
 VCDFILE_MIN = $(basename $(VCDFILE))_min.vcd
@@ -56,7 +56,7 @@ show: $(DOTFILE)
 typsim: $(VCDFILE_TYP)
 
 $(VCDFILE_TYP): $(GATEFILE) $(TESTSRC) $(CELLFILE)
-	iverilog -gspecify -T typ -o gate_typ.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
+	iverilog -g2012 -gspecify -T typ -o gate_typ.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_typ.out
 	mv -f $(VCDFILE) $@
 
@@ -66,7 +66,7 @@ typwave: $(VCDFILE_TYP)
 minsim: $(VCDFILE_MIN)
 
 $(VCDFILE_MIN): $(GATEFILE) $(TESTSRC) $(CELLFILE)
-	iverilog -gspecify -T min -o gate_min.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
+	iverilog -g2012 -gspecify -T min -o gate_min.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_min.out
 	mv -f $(VCDFILE) $@
 
@@ -76,7 +76,7 @@ minwave: $(VCDFILE_MIN)
 maxsim: $(VCDFILE_MAX)
 
 $(VCDFILE_MAX): $(GATEFILE) $(TESTSRC) $(CELLFILE)
-	iverilog -gspecify -T max -o gate_max.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
+	iverilog -g2012 -gspecify -T max -o gate_max.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_max.out
 	mv -f $(VCDFILE) $@
 

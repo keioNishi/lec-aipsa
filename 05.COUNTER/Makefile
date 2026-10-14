@@ -2,8 +2,8 @@
 # Select one with `make TOP=<name>` (default: preset_counter)
 # Convenience targets: `make simple`, `make updown`, `make preset`
 TOP        ?= preset_counter
-SRCS        = $(TOP).v
-TESTSRC     = test_$(TOP).v
+SRCS        = $(TOP).sv
+TESTSRC     = test_$(TOP).sv
 ALLSRCS     = $(SRCS)
 TESTSRCS    = $(TESTSRC) $(SRCS)
 VCDFILE     = $(TOP).vcd
@@ -44,7 +44,7 @@ show: $(DOTFILE)
 typsim: $(VCDFILE_TYP)
 
 $(VCDFILE_TYP): $(GATEFILE) $(TESTSRC) $(CELLFILE)
-	iverilog -gspecify -T typ -o gate_typ.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
+	iverilog -g2012 -gspecify -T typ -o gate_typ.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_typ.out
 	mv -f $(VCDFILE) $@
 
@@ -54,7 +54,7 @@ typwave: $(VCDFILE_TYP)
 minsim: $(VCDFILE_MIN)
 
 $(VCDFILE_MIN): $(GATEFILE) $(TESTSRC) $(CELLFILE)
-	iverilog -gspecify -T min -o gate_min.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
+	iverilog -g2012 -gspecify -T min -o gate_min.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_min.out
 	mv -f $(VCDFILE) $@
 
@@ -64,7 +64,7 @@ minwave: $(VCDFILE_MIN)
 maxsim: $(VCDFILE_MAX)
 
 $(VCDFILE_MAX): $(GATEFILE) $(TESTSRC) $(CELLFILE)
-	iverilog -gspecify -T max -o gate_max.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
+	iverilog -g2012 -gspecify -T max -o gate_max.out $(TESTSRC) $(GATEFILE) $(CELLFILE)
 	vvp gate_max.out
 	mv -f $(VCDFILE) $@
 

@@ -1,0 +1,20 @@
+`timescale 1ns/10ps
+module test;
+	logic [3:0] a, b, s;
+	logic co;
+	raddr raddr(.a(a), .b(b), .s(s), .co(co));
+initial begin
+$dumpfile("raddr.vcd");
+$dumpvars(0, test);
+a = 5;
+b = 3;
+#10
+a = 13;
+b = 7;
+#10
+a = 13;
+b = -7;
+#10
+$finish;
+end
+endmodule

@@ -16,17 +16,22 @@
 
 ### You are strongly encouraged to bring your own laptop
 - We use Icarus Verilog, GTKWave, yosys, and other tools.
-- The hardware description language used is Verilog. You do not need to study Verilog in advance — it will be taught in class.
+- The hardware description language used is SystemVerilog. You do not need to study SystemVerilog in advance — it will be taught in class.
   - Familiarity with the basic structure of any common programming language is sufficient.
 
 ### Setting up and using the CAD environment
-- This course uses Icarus Verilog for Verilog logic simulation and post-synthesis simulation.
+- This course uses Icarus Verilog for SystemVerilog logic simulation and post-synthesis simulation.
+  - Always compile with `iverilog -g2012` (the Makefiles do this).
 - GTKWave is used as the waveform viewer.
 - yosys is used for logic synthesis.
+  - The synthesis scripts (`*.ys`) use the yosys-slang SystemVerilog frontend (`plugin -i slang` / `read_slang`), which is included in [OSS CAD Suite](https://github.com/YosysHQ/oss-cad-suite-build).
+  - If your yosys has no slang plugin, use the commented-out `read_verilog -sv` line in each `.ys` file instead.
   - Install the binary that matches your PC.
   - Use the latest version.
   - The tools are already installed on the PCs in the KIC labs.
   - Putting the tools on a USB stick is a convenient way to use the same setup at the university, at home, or anywhere.
+- In testbenches, connect module ports by name (e.g. `ff ff0(.d(d), .q(q), .clk(clk));`).
+  The synthesized netlist (`gate.v`) may list the ports in a different order, so positional connections can silently mis-wire post-synthesis simulation.
 - Other free or commercial tools (e.g., Cadence, Synopsys, etc.) may also be used in this lecture and the exercises.
 
 ## Using your own environment

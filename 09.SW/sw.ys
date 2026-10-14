@@ -1,13 +1,7 @@
-read_verilog -sv ibsm.sv
-read_verilog -sv fifo.sv
-read_verilog -sv mkreq.sv
-read_verilog -sv mkwe.sv
-read_verilog -sv ib.sv
-read_verilog -sv arb.sv
-read_verilog -sv cbsel.sv
-read_verilog -sv ackor.sv
-read_verilog -sv cb.sv
-read_verilog -sv sw.sv
+plugin -i slang
+read_slang ibsm.sv fifo.sv mkreq.sv mkwe.sv ib.sv arb.sv cbsel.sv ackor.sv cb.sv sw.sv
+# Without the yosys-slang plugin, replace the two lines above with:
+# read_verilog -sv ibsm.sv fifo.sv mkreq.sv mkwe.sv ib.sv arb.sv cbsel.sv ackor.sv cb.sv sw.sv
 proc
 hierarchy -check -top sw
 synth -auto-top

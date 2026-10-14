@@ -1,8 +1,11 @@
-`include "sw.vh"
-module cbsel(input [`PKTW:0] i0, i1, i2, i3, output logic [`PKTW:0] o, input [`PORT:0] d);
+`include "sw.svh"
+module cbsel(
+	input  logic [`PKTW:0] i0, i1, i2, i3,
+	output logic [`PKTW:0] o,
+	input  logic [`PORT:0] d
+);
 	always_comb begin
-		case(d)
-		// synopsys full_case parallel_case
+		unique case(d)
 		4'b0001: o = i0;
 		4'b0010: o = i1;
 		4'b0100: o = i2;

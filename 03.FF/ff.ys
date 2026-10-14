@@ -1,4 +1,7 @@
-read_verilog -sv ff.v
+plugin -i slang
+read_slang ff.sv
+# Without the yosys-slang plugin, replace the two lines above with:
+# read_verilog -sv ff.sv
 proc
 hierarchy -check -top ff
 synth -auto-top

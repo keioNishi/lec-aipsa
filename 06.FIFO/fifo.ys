@@ -1,4 +1,7 @@
-read_verilog -sv fifo.v
+plugin -i slang
+read_slang fifo.sv
+# Without the yosys-slang plugin, replace the two lines above with:
+# read_verilog -sv fifo.sv
 proc
 hierarchy -check -top fifo
 synth -auto-top

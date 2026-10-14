@@ -1,7 +1,15 @@
-`include "sw.vh"
-module sw(input [`PKTW:0] i0, i1, i2, i3, output [`PKTW:0] o0, o1, o2, o3, input clk, rst);
+`include "sw.svh"
+module sw(
+	input  logic [`PKTW:0] i0, i1, i2, i3,
+	output logic [`PKTW:0] o0, o1, o2, o3,
+	input  logic           clk, rst
+);
 	logic [`PKTW:0] co0, co1, co2, co3;
 	logic [`PORT:0] req0, req1, req2, req3;
+	logic ack0, ack1, ack2, ack3;
+	logic full0, full1, full2, full3;
+	logic ack00, ack01, ack02, ack03, ack10, ack11, ack12, ack13;
+	logic ack20, ack21, ack22, ack23, ack30, ack31, ack32, ack33;
 	ib ib0(i0, co0, req0, ack0, full0, clk, rst);
 	ib ib1(i1, co1, req1, ack1, full1, clk, rst);
 	ib ib2(i2, co2, req2, ack2, full2, clk, rst);

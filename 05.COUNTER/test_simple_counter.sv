@@ -1,0 +1,17 @@
+`timescale 1ns/10ps
+module test;
+	logic clk, rst;
+	logic [2:0] count;
+	simple_counter simple_counter(.count(count), .clk(clk), .rst(rst));
+	always #5 clk = ~clk;
+initial begin
+$dumpfile("simple_counter.vcd");
+$dumpvars(0, test);
+clk = 0;
+rst = 1;
+#20
+rst = 0;
+#100
+$finish();
+end
+endmodule

@@ -1,19 +1,26 @@
-`include "sw.vh"
-module fifo(input [`PKTW:0] in, input we, output logic full,
-	output [`PKTW:0] out, input re, output logic empty, input clk, rst);
+`include "sw.svh"
+module fifo(
+	input  logic [`PKTW:0] in,
+	input  logic           we,
+	output logic           full,
+	output logic [`PKTW:0] out,
+	input  logic           re,
+	output logic           empty,
+	input  logic           clk, rst
+);
 	logic [`FIFOLB:0] head, tail, headi;
 	logic [`PKTW:0] mem [`FIFOL:0];
-	logic [`PKTW:0] pout, out;
+	logic [`PKTW:0] pout;
 
 	assign pout = mem[tail];
 	always_comb begin
 		if(empty) out = 0;
 		else out = pout;
 	end
-	always @(posedge clk) if(we) mem[head] <= in;
+	always_ff @(posedge clk) if(we) mem[head] <= in;
 
 	assign headi = head+1;
-	always @(posedge clk) begin
+	always_ff @(posedge clk) begin
 		if(rst) begin
 			head <= 0;
 			tail <= 0;
